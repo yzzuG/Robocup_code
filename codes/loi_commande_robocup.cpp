@@ -5,7 +5,7 @@
 #include <math.h>
 
 /********************************************************/
-/*    Variables globales    */
+/*    Global constants   */
 /********************************************************/
 
 //  moteur + roue
@@ -18,7 +18,7 @@
 
 
 /********************************************************/
-/*    Variables    */
+/*    Global variables    */
 /********************************************************/
 double u1,u2,u3,u4;
 double sens_m1 = 0, sens_m3 = 0;
@@ -37,15 +37,136 @@ double alpha = 0 ;   // angle du cap dans le repere robot en degree
 /********************************************************/
 void main(void)
 {
-  omega1 = (1/RAYON_ROUE)* v_cap * cos((45-alpha)*PI/180);
-  u1 = R_MOTEUR/K_COURANT_MOTEUR * ((J_EQ + K_COURANT_MOTEUR*K_VITESSE_MOTEUR/R_MOTEUR - C_RES_MOTEUR)* omega1);
 
-  omega2 = (1/RAYON_ROUE)* v_cap * cos((alpha+45)*PI/180);
-  u2 = R_MOTEUR/K_COURANT_MOTEUR * ((J_EQ + K_COURANT_MOTEUR*K_VITESSE_MOTEUR/R_MOTEUR - C_RES_MOTEUR)* omega2);
 
-  omega3 = (1/RAYON_ROUE)* v_cap * cos((45-alpha)*PI/180);
-  u3 = R_MOTEUR/K_COURANT_MOTEUR * ((J_EQ + K_COURANT_MOTEUR*K_VITESSE_MOTEUR/R_MOTEUR - C_RES_MOTEUR)* omega3);
 
-  omega4 = (1/RAYON_ROUE)* v_cap * cos((alpha+45)*PI/180);
-  u4 = R_MOTEUR/K_COURANT_MOTEUR * ((J_EQ + K_COURANT_MOTEUR*K_VITESSE_MOTEUR/R_MOTEUR - C_RES_MOTEUR)* omega4);
+  while(true)
+  {
+    // ENTREE
+    /********************************************************/
+    // Reception du maitre
+
+    /********************************************************/
+
+
+    //CALCULS
+    /********************************************************/
+    //Calculs des tensions a delivree aux moteurs
+    ///////////////////moteur 1
+    u1 = tension_moteur_impair(alpha, v_cap);
+    rapport1 = map(abs(u1), 0, 5, 0, 255);
+
+    ///////////////////moteur 2
+    u2 = tension_moteur_pair(alpha, v_cap);
+    rapport2 = map(abs(u2), 0, 5, 0, 255);
+
+    ///////////////////moteur 3
+    u3 = tension_moteur_impair(alpha, v_cap);
+    rapport3 = map(abs(u3), 0, 5, 0, 255);
+
+    ///////////////////moteur 4
+    u4 = tension_moteur_pair(alpha, v_cap);
+    rapport4 = map(abs(u4), 0, 5, 0, 255);
+    /********************************************************/
+    //Determination du sens de rotation
+    sens_m1 = sens_moteur(u1,alpha,1);
+    sens_m2 = sens_moteur(u2,alpha,2);
+    sens_m3 = sens_moteur(u3,alpha,3);
+    sens_m4 = sens_moteur(u4,alpha,4);
+
+    /********************************************************/
+
+
+    //SORTIE
+    /********************************************************/
+
+    analogWrite(PIN_U_M1, rapport1);
+    analogWrite(PIN_U_M2, rapport2);
+    analogWrite(PIN_U_M3, rapport3);
+    analogWrite(PIN_U_M4, rapport4);
+
+    digitalWrite(PIN_SENS_M1, sens_m1);
+    digitalWrite(PIN_SENS_M2, sens_m2);
+    digitalWrite(PIN_SENS_M3, sens_m3);
+    digitalWrite(PIN_SENS_M4, sens_m4);
+
+    /********************************************************/
+  }
 }
+
+/********************************************************/
+/*  Fonction : tension_moteur_impair()                  */
+/********************************************************/
+/*  Variables d'entree :                                */
+/*  alpha : type double                                 */
+/*      angle du vecteur cap dans le repere robot       */
+/*  v_cap : type double                                 */
+/*      norme du vecteur cap                            */
+/********************************************************/
+/*  Variable de sortie :                                */
+/*  u : type double                                     */
+/*      valeur de tension appliquée au moteur           */
+/********************************************************/
+double tension_moteur_impair(double alpha, double v_cap)
+{
+  double omega, u;
+  int signe = 1;
+
+  omega = (1 / RAYON_ROUE) * v_cap * cos((45 - alpha) * PI / 180) * REDUCTION_ROUE;
+  u = omega / SCALING;
+
+  //protection
+  if (u < 0)
+  {
+    signe = -1;
+  }
+  if (abs(u) > U_MAX)
+  {
+    u = signe * U_MAX;
+  }
+  else if ((abs(u) > 0.17) && (abs(u) < 0.33))
+  {
+    u = 0.25 * signe;
+  }
+
+  return u;
+};
+
+
+
+/********************************************************/
+/*  Fonction : tension_moteur_pair()                  */
+/********************************************************/
+/*  Variables d'entree :                                */
+/*  alpha : type double                                 */
+/*      angle du vecteur cap dans le repere robot       */
+/*  v_cap : type double                                 */
+/*      norme du vecteur cap                            */
+/********************************************************/
+/*  Variable de sortie :                                */
+/*  u : type double                                     */
+/*      valeur de tension appliquée au moteur           */
+/********************************************************/
+double tension_moteur_pair(double alpha, double v_cap)
+{
+  double omega, u;
+  int signe = 1;
+
+  omega = (1 / RAYON_ROUE) * v_cap * cos((45 + alpha) * PI / 180) * REDUCTION_ROUE;
+  u = omega / SCALING;
+
+  if (u < 0)
+  {
+    signe = -1;
+  }
+  if (abs(u) > U_MAX)
+  {
+    u = signe * U_MAX;
+  }
+  else if ((abs(u) > 0.17) && (abs(u) < 0.33))
+  {
+    u = 0.25 * signe;
+  }
+
+  return u;
+};
