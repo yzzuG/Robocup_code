@@ -1,3 +1,12 @@
+//*----------------------------------------------------------------------------
+//*  Projet Robocup
+//*----------------------------------------------------------------------------
+//* File Name : commande_moteur_test.ino
+//* Object :  wheels engine control (speed and direction of rotation)
+//* Creation : Max CHANTREAU/Marius CROZET/Armand GUZZONATO  12/12/2022
+//* Modification : Armand Guzzonato 12/12/2022
+//*----------------------------------------------------------------------------
+
 /********************************************************/
 /*    Bibliotheques    */
 /********************************************************/
@@ -7,7 +16,7 @@
 
 
 /********************************************************/
-/*    Variables globales    */
+/*    Global constants     */
 /********************************************************/
 //definition des pins
 //moteur 1 (devant droit)
@@ -39,7 +48,7 @@
 #define U_MAX           5
 
 /********************************************************/
-/*    Variables    */
+/*    Global variables     */
 /********************************************************/
 // donnees dentree
 double v_cap = 0 ;  // norme du cap m/s
@@ -79,6 +88,8 @@ void setup()
   digitalWrite(PIN_SENS_M3, LOW);
   digitalWrite(PIN_SENS_M4, LOW);
 
+
+  //valeurs arbitraires
   alpha = 0;
   v_cap = 3;
 }
@@ -88,12 +99,12 @@ void setup()
 void loop() {
   // ENTREE
   /********************************************************/
-
+  // Reception du maitre
 
   /********************************************************/
 
 
-  //CALCUL
+  //CALCULS
   /********************************************************/
   //Calculs des tensions a delivree aux moteurs
   ///////////////////moteur 1
