@@ -7,7 +7,7 @@
 /********************************************************/
 /*    Variables globales    */
 /********************************************************/
-
+#DEFINE V_MAX
 
 
 /********************************************************/
@@ -30,7 +30,7 @@ double theta;
 
 //Variables de sortie
 double alpha_cap;
-double norme_cap; //en pourcentage
+double norme_cap; //en m/s
 
 
 
@@ -55,20 +55,21 @@ void main(void)
   distance = sqrt(x_d_br*x_d_br+y_d_br*y_d_br);
   if(distance > 0.2)
   {
-    norme_cap = 100;
+    norme_cap = 100;  //en pourcentage
   }
   else if(distance < 0.1)
   {
-    norme_cap = 20;
+    norme_cap = 20;   //en pourcentage
   }
   else if(distance = 0)
   {
-    norme_cap = 0;
+    norme_cap = 0;    //en pourcentage
   }
   else
   {
-    norme_cap = 50;
+    norme_cap = 50;   //en pourcentage
   }
+  norme_cap = norme_cap/100*V_MAX;
 
   //calcul angle cap
   alpha_cap = arccos(x_d_br_relatif*cos(theta)/distance);
