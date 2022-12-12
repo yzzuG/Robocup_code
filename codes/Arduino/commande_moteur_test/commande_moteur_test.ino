@@ -22,12 +22,8 @@
 #define PIN_SENS_4 25
 
 //  moteur + roue
-#define C_RES_MOTEUR 0
-#define K_COURANT_MOTEUR 0
-#define K_VITESSE_MOTEUR 0
-#define R_MOTEUR 0
-#define J_EQ 0
-#define RAYON_ROUE 0
+#define REDUCTION_ROUE 3
+#define RAYON_ROUE 2.75
 
 //autres
 #define CCW 1
@@ -103,6 +99,8 @@ void loop() {
 
   //CALCUL
   /********************************************************/
+
+  //a calculer en fonction de la doc moteur
 
   omega1 = (1 / RAYON_ROUE) * v_cap * cos((45 - alpha) * PI / 180);
   u1 = R_MOTEUR / K_COURANT_MOTEUR * ((J_EQ + K_COURANT_MOTEUR * K_VITESSE_MOTEUR / R_MOTEUR - C_RES_MOTEUR) * omega1);
