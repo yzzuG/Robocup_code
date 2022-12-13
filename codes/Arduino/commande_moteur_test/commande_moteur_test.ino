@@ -41,7 +41,7 @@
 #define SCALING         31.42
 
 //sens de rotation
-#define CCW             1
+#define CCW             120
 #define CW              0
 
 //tension maximum en V
@@ -57,6 +57,7 @@ double alpha = 0 ;   // angle du cap dans le repere robot en degree
 // donnees sortie
 double u1, u2, u3, u4;
 int rapport1, rapport2, rapport3, rapport4;
+int rapport_sens_1,rapport_sens_2,rapport_sens_3,rapport_sens_4;
 int sens_m1 = CCW, sens_m3 = CCW;
 int sens_m2 = CW, sens_m4 = CW;
 
@@ -83,15 +84,21 @@ void setup()
   analogWrite(PIN_U_M3, 0);
   analogWrite(PIN_U_M4, 0);
 
-  digitalWrite(PIN_SENS_M1, LOW);
-  digitalWrite(PIN_SENS_M2, LOW);
-  digitalWrite(PIN_SENS_M3, LOW);
-  digitalWrite(PIN_SENS_M4, LOW);
+
+
+  
+
+  analogWrite(PIN_SENS_M1, 0);
+  analogWrite(PIN_SENS_M2, 0);
+  analogWrite(PIN_SENS_M3, 0);
+  analogWrite(PIN_SENS_M4, 0);
+
+  Serial.begin(9600);
 
 
   //valeurs arbitraires
   alpha = 0;
-  v_cap = 3;
+  v_cap = 4;
 }
 
 
@@ -139,14 +146,23 @@ void loop() {
   analogWrite(PIN_U_M2, rapport2);
   analogWrite(PIN_U_M3, rapport3);
   analogWrite(PIN_U_M4, rapport4);
+  Serial.print("rapport1 = ");
+  Serial.println(rapport1);
+  
 
-  digitalWrite(PIN_SENS_M1, sens_m1);
-  digitalWrite(PIN_SENS_M2, sens_m2);
-  digitalWrite(PIN_SENS_M3, sens_m3);
-  digitalWrite(PIN_SENS_M4, sens_m4);
+  
+
+  
+  analogWrite(PIN_SENS_M1, sens_m1);
+  analogWrite(PIN_SENS_M2, sens_m2);
+  analogWrite(PIN_SENS_M3, sens_m3);
+  analogWrite(PIN_SENS_M4, sens_m4);
+  Serial.print("sens_m1 = ");
+  Serial.println(sens_m1);
 
   /********************************************************/
-  delay(100);
+  
+  delay(2000);
 }
 
 
