@@ -19,16 +19,16 @@
 /*    Global constants     */
 /********************************************************/
 //definition des pins
-//moteur 1 (devant droit)
+//moteur 1 (devant gauche)
 #define PIN_U_M1        2
 #define PIN_SENS_M1     22
-//moteur 2 (devant gauche)
+//moteur 2 (devant droit)
 #define PIN_U_M2        3
 #define PIN_SENS_M2     23
-//moteur 3 (derriere gauche)
+//moteur 3 (derriere droit)
 #define PIN_U_M3        4
 #define PIN_SENS_M3     24
-//moteur 4 (derriere droit)
+//moteur 4 (derriere gauche)
 #define PIN_U_M4        5
 #define PIN_SENS_M4     25
 
@@ -41,11 +41,11 @@
 #define SCALING         31.42
 
 //sens de rotation
-#define CCW             120
+#define CCW             1
 #define CW              0
 
 //tension maximum en V
-#define U_MAX           5
+#define U_MAX           3.3
 
 /********************************************************/
 /*    Global variables     */
@@ -57,9 +57,12 @@ double alpha = 0 ;   // angle du cap dans le repere robot en degree
 // donnees sortie
 double u1, u2, u3, u4;
 int rapport1, rapport2, rapport3, rapport4;
-int rapport_sens_1,rapport_sens_2,rapport_sens_3,rapport_sens_4;
+int rapport_sens_1, rapport_sens_2, rapport_sens_3, rapport_sens_4;
 int sens_m1 = CCW, sens_m3 = CCW;
 int sens_m2 = CW, sens_m4 = CW;
+
+
+int cycle = 0;
 
 
 
@@ -86,9 +89,9 @@ void setup()
 
 
 
-  
 
-  analogWrite(PIN_SENS_M1, 0);
+
+  digitalWrite(PIN_SENS_M1, 0);
   analogWrite(PIN_SENS_M2, 0);
   analogWrite(PIN_SENS_M3, 0);
   analogWrite(PIN_SENS_M4, 0);
@@ -107,6 +110,28 @@ void loop() {
   // ENTREE
   /********************************************************/
   // Reception du maitre
+
+  if (cycle == 10)
+  {
+    alpha = 0;
+    v_cap = 2;
+  }
+  else if (cycle == 20)
+  {
+    alpha = 180;
+    v_cap = 4;
+  }
+  else if (cycle == 30)
+  {
+    alpha = 45;
+    v_cap = 4;
+  }
+  else if (cycle == 40)
+  {
+    alpha = -45;
+    v_cap = 4;
+  }
+
 
   /********************************************************/
 
@@ -131,10 +156,10 @@ void loop() {
   rapport4 = map(abs(u4), 0, 5, 0, 255);
   /********************************************************/
   //Determination du sens de rotation
-  sens_m1 = sens_moteur(u1,alpha,1);
-  sens_m2 = sens_moteur(u2,alpha,2);
-  sens_m3 = sens_moteur(u3,alpha,3);
-  sens_m4 = sens_moteur(u4,alpha,4);
+  sens_m1 = sens_moteur(u1, alpha, 1);
+  sens_m2 = sens_moteur(u2, alpha, 2);
+  sens_m3 = sens_moteur(u3, alpha, 3);
+  sens_m4 = sens_moteur(u4, alpha, 4);
 
   /********************************************************/
 
@@ -146,23 +171,42 @@ void loop() {
   analogWrite(PIN_U_M2, rapport2);
   analogWrite(PIN_U_M3, rapport3);
   analogWrite(PIN_U_M4, rapport4);
-  Serial.print("rapport1 = ");
-  Serial.println(rapport1);
+
+  digitalWrite(PIN_SENS_M1, sens_m1);
+  digitalWrite(PIN_SENS_M2, sens_m2);
+  digitalWrite(PIN_SENS_M3, sens_m3);
+  digitalWrite(PIN_SENS_M4, sens_m4);
+
+
+  //AFFICHAGE DEBBUGAGE
+  Serial.println(cycle);
   
+  Serial.print("Moteur1 : ");
+  Serial.print(abs(u1));
+  Serial.print("    ");
+  Serial.print(sens_m1);
+  
+  Serial.print("                            Moteur2 : ");
+  Serial.print(abs(u2));
+  Serial.print("    ");
+  Serial.println(sens_m2);
+  
+  Serial.print("Moteur4 : ");
+  Serial.print(abs(u4));
+  Serial.print("    ");
+  Serial.print(sens_m4);
+  
+  Serial.print("                            Moteur3 : ");
+  Serial.print(abs(u3));
+  Serial.print("    ");
+  Serial.println(sens_m3);
+  Serial.println("");
 
   
-
-  
-  analogWrite(PIN_SENS_M1, sens_m1);
-  analogWrite(PIN_SENS_M2, sens_m2);
-  analogWrite(PIN_SENS_M3, sens_m3);
-  analogWrite(PIN_SENS_M4, sens_m4);
-  Serial.print("sens_m1 = ");
-  Serial.println(sens_m1);
-
   /********************************************************/
   
-  delay(2000);
+  delay(1000);
+  cycle ++;
 }
 
 
@@ -271,7 +315,6 @@ double tension_moteur_pair(double alpha, double v_cap)
 int sens_moteur(double u, double alpha, int id_moteur)
 {
   int sens_rotation;
-  int reste, quotient;
 
   //moteur 1
   if (id_moteur == 1)
@@ -302,60 +345,26 @@ int sens_moteur(double u, double alpha, int id_moteur)
   //moteur 3
   if (id_moteur == 3)
   {
-    reste    = (int)alpha % 45;
-    quotient = (int)alpha / 45;
-
-    if ((1 <= abs(quotient)) && (abs(quotient) <= 2) && (quotient == 0) || (reste != 0))
+    if (u < 0)
     {
-      if (u < 0)
-      {
-        sens_rotation = CCW;
-      }
-      else
-      {
-        sens_rotation = CW;
-      }
+      sens_rotation = CCW;
     }
     else
     {
-      if (u < 0)
-      {
-        sens_rotation = CW;
-      }
-      else
-      {
-        sens_rotation = CCW;
-      }
+      sens_rotation = CW;
     }
   }
 
   //moteur 4
   if (id_moteur == 4)
   {
-    reste    = (int)alpha % 45;
-    quotient = (int)alpha / 45;
-
-    if ((1 <= abs(quotient)) && (abs(quotient) <= 2) && (quotient == 0) || (reste != 0))
+    if (u < 0)
     {
-      if (u < 0)
-      {
-        sens_rotation = CW;
-      }
-      else
-      {
-        sens_rotation = CCW;
-      }
+      sens_rotation = CW;
     }
     else
     {
-      if (u < 0)
-      {
-        sens_rotation = CCW;
-      }
-      else
-      {
-        sens_rotation = CW;
-      }
+      sens_rotation = CCW;
     }
   }
 
