@@ -19,16 +19,16 @@
 /*    Global constants     */
 /********************************************************/
 //definition des pins
-//moteur 1 (devant gauche)
+//moteur 1 (devant droit)
 #define PIN_U_M1        2
 #define PIN_SENS_M1     22
-//moteur 2 (devant droit)
+//moteur 2 (devant gauche)
 #define PIN_U_M2        3
 #define PIN_SENS_M2     23
-//moteur 3 (derriere droit)
+//moteur 3 (derriere gauche)
 #define PIN_U_M3        4
 #define PIN_SENS_M3     24
-//moteur 4 (derriere gauche)
+//moteur 4 (derriere droit)
 #define PIN_U_M4        5
 #define PIN_SENS_M4     25
 
@@ -180,31 +180,31 @@ void loop() {
 
   //AFFICHAGE DEBBUGAGE
   Serial.println(cycle);
-  
+
   Serial.print("Moteur1 : ");
   Serial.print(abs(u1));
   Serial.print("    ");
   Serial.print(sens_m1);
-  
+
   Serial.print("                            Moteur2 : ");
   Serial.print(abs(u2));
   Serial.print("    ");
   Serial.println(sens_m2);
-  
+
   Serial.print("Moteur4 : ");
   Serial.print(abs(u4));
   Serial.print("    ");
   Serial.print(sens_m4);
-  
+
   Serial.print("                            Moteur3 : ");
   Serial.print(abs(u3));
   Serial.print("    ");
   Serial.println(sens_m3);
   Serial.println("");
 
-  
+
   /********************************************************/
-  
+
   delay(1000);
   cycle ++;
 }
@@ -236,7 +236,7 @@ double tension_moteur_impair(double alpha, double v_cap)
   double omega, u;
   int signe = 1;
 
-  omega = (1 / RAYON_ROUE) * v_cap * cos((45 - alpha) * PI / 180) * REDUCTION_ROUE;
+  omega = (1 / RAYON_ROUE) * v_cap * cos((45 + alpha) * PI / 180) * REDUCTION_ROUE;
   u = omega / SCALING;
 
   //protection
@@ -276,7 +276,7 @@ double tension_moteur_pair(double alpha, double v_cap)
   double omega, u;
   int signe = 1;
 
-  omega = (1 / RAYON_ROUE) * v_cap * cos((45 + alpha) * PI / 180) * REDUCTION_ROUE;
+  omega = (1 / RAYON_ROUE) * v_cap * cos((45 - alpha) * PI / 180) * REDUCTION_ROUE;
   u = omega / SCALING;
 
   if (u < 0)
@@ -316,8 +316,8 @@ int sens_moteur(double u, double alpha, int id_moteur)
 {
   int sens_rotation;
 
-  //moteur 1
-  if (id_moteur == 1)
+  //moteur 1 et 4
+  if ((id_moteur == 1) || (id_moteur == 4))
   {
     if (u < 0)
     {
@@ -329,8 +329,8 @@ int sens_moteur(double u, double alpha, int id_moteur)
     }
   }
 
-  //moteur 2
-  if (id_moteur == 2)
+  //moteur 2 et 3
+  if ((id_moteur == 2) || (id_moteur == 3))
   {
     if (u < 0)
     {
@@ -339,32 +339,6 @@ int sens_moteur(double u, double alpha, int id_moteur)
     else
     {
       sens_rotation = CW;
-    }
-  }
-
-  //moteur 3
-  if (id_moteur == 3)
-  {
-    if (u < 0)
-    {
-      sens_rotation = CCW;
-    }
-    else
-    {
-      sens_rotation = CW;
-    }
-  }
-
-  //moteur 4
-  if (id_moteur == 4)
-  {
-    if (u < 0)
-    {
-      sens_rotation = CW;
-    }
-    else
-    {
-      sens_rotation = CCW;
     }
   }
 
