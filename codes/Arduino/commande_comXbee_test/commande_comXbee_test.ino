@@ -38,7 +38,7 @@
 //rayon roue en m
 #define RAYON_ROUE      0.05
 //coef de prop du moteur en rad/s/V
-#define SCALING         31.42
+#define SCALING         62.8
 
 //sens de rotation
 #define CCW             1
@@ -46,6 +46,8 @@
 
 //tension maximum en V
 #define U_MAX           1.8
+//vitesse de cap maximum en m/s
+#define V_CAP_MAX       3.5
 
 /********************************************************/
 /*    Global variables     */
@@ -60,11 +62,6 @@ int rapport1, rapport2, rapport3, rapport4;
 int rapport_sens_1, rapport_sens_2, rapport_sens_3, rapport_sens_4;
 int sens_m1 = CCW, sens_m3 = CCW;
 int sens_m2 = CW, sens_m4 = CW;
-
-int cycle = 0;
-
-int tempo = 0;
-
 
 
 void setup()
@@ -95,7 +92,6 @@ void setup()
 
 
 
-
   //valeurs arbitraires
   alpha = 0;
   v_cap = 0;
@@ -106,15 +102,64 @@ void setup()
 void loop() {
 
 
-
-
-
   // ENTREE
   /********************************************************/
   // Reception du maitre
   
+  // Reception de 3 octets :
+  //    ID : 0xFB pour alpha_cap    ||    0xFC pour v_cap
+  //    signe : 0x01 pour le + et 0x02 pour le -
+  //    valeur : entre -180 et 180 pour alpha et entre 0 et 100% pour V_cap (si 0 --> recpetion de 0x04)
+  
+  if (Serial2.available()) {
+    // Wait a bit for the entire message to arrive
+    //delay(100);
 
-
+    while (Serial2.available() > 0) 
+    {
+      data_temp[0] = Serial2.read();    //ID
+      data_temp[1] = Serial2.read();    //signe
+      data_temp[2] = Serial2.read();    //valeur
+    }
+  }
+  
+  /********************************************************/
+  // Traitement des data
+  
+  
+  if (data_temp[0] == 0xFB)           //traitment valeur alpha_cap
+  {
+    if (data_temp[2] == 0x04)         //si 0 est recu
+    {
+      alpha_cap = 0;
+    }
+    else if (data_temp[1] == 0x02)    //valeur negative
+    {
+      alpha_cap = -data_temp[2];
+    }
+    else if  (data_temp[1] == 0x01)   //valeur positive
+    {
+      alpha_cap = data_temp[2];
+    }
+    else
+    {
+      alpha_cap = data_temp[2];
+    }
+  }
+  else if(data_temp[0] == 0xFC)       //traitment valeur v_cap
+  {
+    if (data_temp[2] == 0x04)         //si 0 est recu
+    {
+      v_cap = 0;
+    }
+    else
+    {
+      v_cap = data_temp[2];
+    }
+  }
+  
+  //règle de trois sur la valeur de V_CAP_MAX
+  v_cap = map(abs(u4), 0, 100, 0, V_CAP_MAX);
 
   /********************************************************/
 
@@ -124,19 +169,19 @@ void loop() {
   //Calculs des tensions a delivree aux moteurs
   ///////////////////moteur 1
   u1 = tension_moteur_impair(alpha, v_cap);
-  rapport1 = map(abs(u1), 0, 5, 0, 255);
+  rapport1 = map(abs(u1), 0, 3.3, 0, 255);
 
   ///////////////////moteur 2
   u2 = tension_moteur_pair(alpha, v_cap);
-  rapport2 = map(abs(u2), 0, 5, 0, 255);
+  rapport2 = map(abs(u2), 0, 3.3, 0, 255);
 
   ///////////////////moteur 3
   u3 = tension_moteur_impair(alpha, v_cap);
-  rapport3 = map(abs(u3), 0, 5, 0, 255);
+  rapport3 = map(abs(u3), 0, 3.3, 0, 255);
 
   ///////////////////moteur 4
   u4 = tension_moteur_pair(alpha, v_cap);
-  rapport4 = map(abs(u4), 0, 5, 0, 255);
+  rapport4 = map(abs(u4), 0, 3.3, 0, 255);
   /********************************************************/
   //Determination du sens de rotation
   sens_m1 = sens_moteur(u1, alpha, 1);
@@ -188,7 +233,6 @@ void loop() {
 
   /********************************************************/
 
-  tempo = 0;
 }
 
 
