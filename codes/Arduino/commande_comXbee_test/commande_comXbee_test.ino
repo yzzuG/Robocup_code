@@ -12,7 +12,6 @@
 /********************************************************/
 
 #include <math.h>
-#include <SoftwareSerial.h>
 
 
 
@@ -46,7 +45,7 @@
 #define CW              0
 
 //tension maximum en V
-#define U_MAX           3.3
+#define U_MAX           1.8
 
 /********************************************************/
 /*    Global variables     */
@@ -64,10 +63,7 @@ int sens_m2 = CW, sens_m4 = CW;
 
 int cycle = 0;
 
-string rxData;
 int tempo = 0;
-
-SoftwareSerial xbee(2, 3);
 
 
 
@@ -95,10 +91,9 @@ void setup()
   analogWrite(PIN_SENS_M3, 0);
   analogWrite(PIN_SENS_M4, 0);
 
-  Serial.begin(9600);
+  Serial2.begin(57600);
 
-  //XBee
-  xbee.begin(9600);
+
 
 
   //valeurs arbitraires
@@ -110,12 +105,7 @@ void setup()
 
 void loop() {
 
-  while(tempo==0)
-  if(xbee.available())
-  {
-    rxData = Serial.write(xbee.read());
-    tempo = 1;
-  }
+
 
 
 

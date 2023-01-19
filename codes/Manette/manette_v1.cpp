@@ -56,7 +56,7 @@ int main() {
 	/**	Serial port definition **/
 	/***************************************************************************************************/
 	#ifdef ceWINDOWS
-		ceSerial com("\\\\.\\COM4",115200,8,'N',1); // Windows
+		ceSerial com("\\\\.\\COM4",57600,8,'N',1); // Windows
 	#endif
 	/***************************************************************************************************/
 
@@ -66,11 +66,11 @@ int main() {
 	printf("Opening port %s.\n",com.GetPort().c_str());
 	if (com.Open() == 0) 
 	{
-		for (int i =0; i<10; i++)
+		/*for (int i =0; i<10; i++)
 		{
 			printf("#");
 			usleep(500*1000);
-		}
+		}*/
 		printf("\nOK.\n\n\n");
 		usleep(1000*1000);
 	}

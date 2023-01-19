@@ -113,25 +113,20 @@ void loop() {
 
   if (cycle == 10)
   {
-    alpha = 0;
-    v_cap = 2;
-  }
-  else if (cycle == 20)
-  {
     alpha = 180;
     v_cap = 4;
   }
-  else if (cycle == 30)
+  else if (cycle == 20)
   {
     alpha = 45;
     v_cap = 4;
   }
-  else if (cycle == 40)
+  else if (cycle == 30)
   {
     alpha = -45;
     v_cap = 4;
   }
-  else if(cycle <50)
+  else if(cycle <40)
   {
     alpha=0;
     v_cap=0;
