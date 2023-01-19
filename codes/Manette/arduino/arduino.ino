@@ -19,26 +19,26 @@ int alpha_cap = 0, v_cap = 0 ;
 void setup()
 {
   lcd.begin(); // initialisation de l'afficheur
-  Serial.begin(9600);
+  Serial2.begin(57600);
   lcd.backlight();
 }
 
 void loop()
 {
-  if (Serial.available()) {
+  if (Serial2.available()) {
     // Wait a bit for the entire message to arrive
     //delay(100);
     // Clear the screen
     lcd.clear();
 
     // Write all characters received with the serial port to the LCD.
-    while (Serial.available() > 0) {
+    while (Serial2.available() > 0) {
       //data = Serial.parseInt();
       //Serial.parseInt();
 
-      data_temp[0] = Serial.read();
-      data_temp[1] = Serial.read();
-      data_temp[2] = Serial.read();
+      data_temp[0] = Serial2.read();
+      data_temp[1] = Serial2.read();
+      data_temp[2] = Serial2.read();
     }
   }
 
