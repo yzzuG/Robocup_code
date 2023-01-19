@@ -38,7 +38,7 @@
 //rayon roue en m
 #define RAYON_ROUE      0.05
 //coef de prop du moteur en rad/s/V
-#define SCALING         31.42
+#define SCALING         31.42*2
 
 //sens de rotation
 #define CCW             1
