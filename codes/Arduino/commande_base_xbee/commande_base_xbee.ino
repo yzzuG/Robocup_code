@@ -46,6 +46,8 @@
 
 //tension maximum en V
 #define U_MAX           3.3
+//vitesse de cap maximum en m/s
+#define V_CAP_MAX       3.5
 
 /********************************************************/
 /*    Global variables     */
@@ -60,13 +62,11 @@ int rapport1, rapport2, rapport3, rapport4;
 int rapport_sens_1, rapport_sens_2, rapport_sens_3, rapport_sens_4;
 int sens_m1 = CCW, sens_m3 = CCW;
 int sens_m2 = CW, sens_m4 = CW;
-
-String cycle = "";
-
-//Variable de marius : 
-char message ; 
-int v = 0 ;
-String d ; 
+String Temp_string;
+String var1, var2;
+char buffer[3];
+int data[2];
+int pos1,pos2;
 
 // Initialisation 
 
@@ -94,13 +94,13 @@ void setup()
   analogWrite(PIN_SENS_M3, 0);
   analogWrite(PIN_SENS_M4, 0);
 
-  Serial.begin(9600);
-  Serial2.begin(57600);   
+  Serial2.begin(57600);
+  //Serial2.begin(57600);   
 
 
   //valeurs arbitraires
   alpha = 0;
-  v_cap = 4;
+  v_cap = 0;
 }
 
 
@@ -109,50 +109,26 @@ void loop() {
   /********************************************************/
   // Reception du maitre
 
-  if(Serial2.available()) 
+    if(Serial2.available()) 
   {
-    d = "" ; 
     while(Serial2.available())  
     {
-      message = Serial2.read();
-      if (message =='#'&& v == 0)
-      {
-        v = 1 ; 
-      }
-      else if (message =='#'&& v == 1)
-      {
-        v = 0 ; 
-      }
-      else if (v == 1)
-      {
-        d = d + message ; 
-      } 
+      Temp_string = Serial2.readStringUntil('@');      
     }
-  }
-  Serial.println(d) ; 
+    pos1 = Temp_string.indexOf('#');
+    pos2 = Temp_string.indexOf('#', pos1 + 1);
+    var1 = Temp_string.substring(0, pos1);
+    var2 = Temp_string.substring(pos1 + 1, pos2);
 
-  cycle = d ; 
-  
-  if (cycle == "10")
-  {
-    alpha = 0;
-    v_cap = 2;
+    var1.toCharArray(buffer,3);
+    v_cap = buffer[0]*100 + buffer[1]*10 + buffer[2];
+
+    var2.toCharArray(buffer,3);
+    alpha = buffer[0]*100 + buffer[1]*10 + buffer[2];
   }
-  else if (cycle == "20")
-  {
-    alpha = 180;
-    v_cap = 4;
-  }
-  else if (cycle == "30")
-  {
-    alpha = 45;
-    v_cap = 4;
-  }
-  else if (cycle == "40")
-  {
-    alpha = -45;
-    v_cap = 4;
-  }
+
+  //règle de trois sur la valeur de V_CAP_MAX
+  v_cap = map(abs(u4), 0, 100, 0, V_CAP_MAX);
 
   /********************************************************/
   //CALCULS
@@ -198,7 +174,7 @@ void loop() {
 
 
   //AFFICHAGE DEBBUGAGE
-  Serial.println(cycle);
+  
 
   Serial.print("Moteur1 : ");
   Serial.print(abs(u1));
@@ -224,7 +200,6 @@ void loop() {
 
   /********************************************************/
 
-  delay(500);
 }
 
 /********************************************************/
