@@ -38,7 +38,7 @@
 //rayon roue en m
 #define RAYON_ROUE      0.05
 //coef de prop du moteur en rad/s/V
-#define SCALING         31.42
+#define SCALING         62.8
 
 //sens de rotation
 #define CCW             1
@@ -159,20 +159,20 @@ void loop() {
   /********************************************************/
   //Calculs des tensions a delivree aux moteurs
   ///////////////////moteur 1
-  u1 = tension_moteur_impair(alpha, v_cap);
-  rapport1 = map(abs(u1), 0, 5, 0, 255);
+   u1 = tension_moteur_impair(alpha, v_cap);
+  rapport1 = map(abs(u1), 0, 3.3, 0, 255);
 
   ///////////////////moteur 2
   u2 = tension_moteur_pair(alpha, v_cap);
-  rapport2 = map(abs(u2), 0, 5, 0, 255);
+  rapport2 = map(abs(u2), 0, 3.3, 0, 255);
 
   ///////////////////moteur 3
   u3 = tension_moteur_impair(alpha, v_cap);
-  rapport3 = map(abs(u3), 0, 5, 0, 255);
+  rapport3 = map(abs(u3), 0, 3.3, 0, 255);
 
   ///////////////////moteur 4
   u4 = tension_moteur_pair(alpha, v_cap);
-  rapport4 = map(abs(u4), 0, 5, 0, 255);
+  rapport4 = map(abs(u4), 0, 3.3, 0, 255);
   /********************************************************/
   //Determination du sens de rotation
   sens_m1 = sens_moteur(u1, alpha, 1);
