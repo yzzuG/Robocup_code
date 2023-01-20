@@ -1,7 +1,7 @@
 //*----------------------------------------------------------------------------
 //*  Projet Robocup
 //*----------------------------------------------------------------------------
-//* File Name : commande_moteur_test.ino
+//* File Name : commande_base_xbee.ino
 //* Object :  wheels engine control (speed and direction of rotation)
 //* Creation : Max CHANTREAU/Marius CROZET/Armand GUZZONATO  12/12/2022
 //* Modification : Armand Guzzonato 12/12/2022
