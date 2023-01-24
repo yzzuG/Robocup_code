@@ -194,21 +194,19 @@ if(Serial2.available())
       }
     }
   }
-      v_cap = v_c + v_d + v_u ;
-      alpha = ang_c + ang_d + ang_u ; 
-      Serial.print("Vitesse : ") ; 
-      Serial.print(v_cap) ; 
-      Serial.println("") ; 
-      Serial.print("Angle :") ; 
-      Serial.print(alpha) ; 
-      Serial.println("") ; 
+  v_cap = v_c + v_d + v_u ;
+  alpha = ang_c + ang_d + ang_u ; 
+  Serial.print("Vitesse : ") ; 
+  Serial.print(v_cap) ; 
+
+  Serial.print("        Angle :") ; 
+  Serial.print(alpha) ;  
 
   //règle de trois sur la valeur de V_CAP_MAX
-//  v_cap = map(v_cap, 0, 100, 0, V_CAP_MAX);
+  //  v_cap = map(v_cap, 0, 100, 0, V_CAP_MAX);
   v_cap = v_cap*V_CAP_MAX/100 ;   
-  Serial.print("Vitesse 2 : ") ; 
-  Serial.print(v_cap) ; 
-  Serial.println("") ;  
+  Serial.print("         Vitesse 2 : ") ; 
+  Serial.println(v_cap) ; 
 
   /********************************************************/
   //CALCULS
@@ -256,7 +254,7 @@ if(Serial2.available())
   //AFFICHAGE DEBBUGAGE
   
 
-  Serial.print("Moteur1 : ");
+  /*Serial.print("Moteur1 : ");
   Serial.print(abs(u1));
   Serial.print("    ");
   Serial.print(sens_m1);
@@ -275,11 +273,11 @@ if(Serial2.available())
   Serial.print(abs(u3));
   Serial.print("    ");
   Serial.println(sens_m3);
-  Serial.println("");
+  Serial.println("");*/
 
 
   /********************************************************/
-delay(1000) ; 
+delay(500) ; 
 }
 
 /********************************************************/

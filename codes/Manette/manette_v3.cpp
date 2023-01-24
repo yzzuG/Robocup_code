@@ -1,4 +1,4 @@
-// File: manette_v2.cpp
+// File: manette_v3.cpp
 // Description: Serial communication console program for Windows 
 // Copyright (c) 2023 Armand Guzzonato
 
@@ -20,6 +20,7 @@ using namespace ce;
 
 /***************************************************************************************************/
 
+int directionShift(char commande, int alpha_cap);
 int direction(char commande, int alpha_cap);
 int velocity(char commande, int v_cap);
 void Readme(void);
@@ -51,6 +52,8 @@ int main() {
 
 	int alpha_add = 0;
 	int v_cap_add = 0;
+
+    bool shiftButton =0;
 	/***************************************************************************************************/
 
 	
@@ -94,14 +97,32 @@ int main() {
 	while (stop == 0)
 	{
 		commande = getch();
+        
+        if(commande == 'p')
+        {
+            shiftButton = 1;
+            commande = getch();
+        }
+        else
+        {
+            shiftButton =0;
+        }
 
-
+        
 		/**	direction control **/
 		/***************************************************************************************************/
 		if ((commande == 'z') || (commande == 'q') || (commande == 's') || (commande == 'd'))
 		{
-			alpha_add = direction(commande, alpha_cap);
-			alpha_cap = alpha_cap + alpha_add;
+
+            if(shiftButton == 1)
+            {
+                alpha_add = directionShift(commande, alpha_cap);
+                alpha_cap = alpha_cap + alpha_add;
+            }
+            else
+            {
+                alpha_cap = direction(commande, alpha_cap);
+            }
 
 			data_id = dir_data;
 			alpha_cap_uart = (unsigned char) (abs(alpha_cap));
@@ -178,7 +199,7 @@ int main() {
 		*/
 		/***************************************************************************************************/
 
-		usleep(100000);
+		usleep(100*1000);
 
 	}
 
@@ -212,7 +233,7 @@ int main() {
 /**	Functions **/
 /***************************************************************************************************/
 
-int direction(char commande, int alpha_cap)
+int directionShift(char commande, int alpha_cap)
 {
 	/** PRESS Z **/
 	if (commande == 'z')
@@ -293,6 +314,36 @@ int direction(char commande, int alpha_cap)
 	{
 		return 0;
 	}
+};
+
+int direction(char commande, int alpha_cap)
+{
+	/** PRESS Z **/
+	if (commande == 'z')
+	{
+		return 0;
+	}
+
+	/** PRESS Q **/
+	else if (commande == 'q')
+	{
+		return 90;
+	}
+
+	/** PRESS S **/
+	else if (commande == 's')
+	{
+		return 180;
+	}
+
+	/** PRESS D **/
+	else if (commande == 'd')
+	{
+		return 270;
+    }
+    else{
+        return 0;
+    }
 };
 
 int velocity(char commande, int v_cap)
