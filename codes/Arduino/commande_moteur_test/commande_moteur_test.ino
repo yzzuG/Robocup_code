@@ -126,7 +126,7 @@ void loop() {
     alpha = -45;
     v_cap = 4;
   }
-  else if(cycle <40)
+  else if(cycle >40)
   {
     alpha=0;
     v_cap=0;

@@ -67,11 +67,6 @@ int main() {
 	printf("Opening port %s.\n",com.GetPort().c_str());
 	if (com.Open() == 0) 
 	{
-		for (int i =0; i<10; i++)
-		{
-			printf("#");
-			usleep(500*1000);
-		}
 		printf("\nOK.\n\n\n");
 		usleep(1000*1000);
 	}
