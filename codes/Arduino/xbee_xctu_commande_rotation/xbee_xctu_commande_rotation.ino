@@ -70,6 +70,8 @@ int ang_c ;
 int ang_d ; 
 int ang_u ; 
 
+int rotation ; 
+
 // donnees dentree
 double v_cap = 0.0 ;  // norme du cap m/s
 double alpha = 0.0 ;   // angle du cap dans le repere robot en degree
@@ -85,7 +87,7 @@ String var1, var2;
 char buffer[3];
 int data[2];
 int pos1,pos2;
-int rotation = 0;
+
 
 // Initialisation 
 
@@ -154,11 +156,6 @@ if(Serial2.available())
       {
         compte = 1 ; 
       }
-    
-
-
-
-
       else if(compte == 1)
       {
         v_c = (d[j]-48)*100; 
@@ -195,8 +192,17 @@ if(Serial2.available())
       }
       else if(compte == 8 && d[j] =='#')
       {
-        compte = 0 ; 
+        compte = 9 ; 
 
+      }
+      else if(compte == 9)
+      {
+        rotation= (d[j]-48) ; 
+        compte = 10; 
+      }
+      else if(compte == 10 && d[j] =='#')
+      {
+        compte = 0 ; 
       }
     }
   }
@@ -237,10 +243,10 @@ if(Serial2.available())
   //Determination du sens de rotation
   if(rotation !=0)
   {
-    sens_m1 = rotation(rotation);
-    sens_m2 = rotation(rotation);
-    sens_m3 = rotation(rotation);
-    sens_m4 = rotation(rotation);
+    sens_m1 = rot(rotation);
+    sens_m2 = rot(rotation);
+    sens_m3 = rot(rotation);
+    sens_m4 = rot(rotation);
   }
   else
   {
@@ -445,7 +451,7 @@ int sens_moteur(double u, double alpha, int id_moteur)
 /*  sens_rotation : type int                            */
 /*      sens de rotation du moteur (CW ou CCW)          */
 /********************************************************/
-int rotation(int rotation)
+int rot(int rotation)
 {
   //moteur 1 et 4
   if (rotation == 1)
