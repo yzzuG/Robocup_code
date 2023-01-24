@@ -235,10 +235,20 @@ if(Serial2.available())
   rapport4 = map(abs(u4), 0, 3.3, 0, 255);
   /********************************************************/
   //Determination du sens de rotation
-  sens_m1 = sens_moteur(u1, alpha, 1);
-  sens_m2 = sens_moteur(u2, alpha, 2);
-  sens_m3 = sens_moteur(u3, alpha, 3);
-  sens_m4 = sens_moteur(u4, alpha, 4);
+  if(rotation !=0)
+  {
+    sens_m1 = rotation(rotation);
+    sens_m2 = rotation(rotation);
+    sens_m3 = rotation(rotation);
+    sens_m4 = rotation(rotation);
+  }
+  else
+  {
+    sens_m1 = sens_moteur(u1, alpha, 1);
+    sens_m2 = sens_moteur(u2, alpha, 2);
+    sens_m3 = sens_moteur(u3, alpha, 3);
+    sens_m4 = sens_moteur(u4, alpha, 4);
+  }
 
   /********************************************************/
 
